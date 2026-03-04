@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinyFish HR Automation Platform - Live Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --secondary: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg-dark: #0f172a;
+      --bg-darker: #020617;
+      --bg-card: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border: #334155;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1f35 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Background Grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(90deg, #334155 1px, transparent 1px),
+        linear-gradient(#334155 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.1;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 20px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
+    }
+
+    .header-text h1 {
+      font-size: 24px;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-text p {
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    nav button {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      position: relative;
+      bottom: -15px;
+      font-weight: 500;
+    }
+
+    nav button.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    nav button:hover {
+      color: var(--primary);
+    }
+
+    /* ===== METRICS GRID ===== */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(20, 30, 48, 0.8));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .metric-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+    }
+
+    .metric-card:hover::before {
+      opacity: 1;
+    }
+
+    .metric-label {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .metric-unit {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* ===== WORKFLOWS ===== */
+    .workflow-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(20, 30, 48, 0.8));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .workflow-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1);
+    }
+
+    .workflow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .workflow-info h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .workflow-info p {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .workflow-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(52, 73, 94, 0.6);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(52, 73, 94, 0.8);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-section {
+      margin: 15px 0;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: rgba(52, 73, 94, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      transition: width 0.3s;
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-running {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+
+    .status-running::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--warning);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+      margin-right: 6px;
+    }
+
+    .status-completed {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .status-completed::before {
+      content: '✓ ';
+      margin-right: 4px;
+    }
+
+    .status-idle {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-secondary);
+    }
+
+    /* ===== WORKFLOW STATS ===== */
+    .workflow-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .stat-box {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ===== LOGS ===== */
+    .logs-container {
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      height: 500px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 12px;
+    }
+
+    .log-entry {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(52, 73, 94, 0.3);
+      display: flex;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .log-time {
+      color: #64748b;
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+
+    .log-message {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .log-info { color: #94a3b8; }
+    .log-success { color: #10b981; }
+    .log-warning { color: #f59e0b; }
+    .log-error { color: #ef4444; }
+    .log-start { color: #0ea5e9; }
+
+    /* ===== SECTIONS ===== */
+    section {
+      margin-bottom: 40px;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    section h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    main {
+      padding: 30px 0;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 0;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.5);
+      margin-top: 60px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .workflow-controls {
+        width: 100%;
+      }
+
+      nav {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .metric-value {
+        font-size: 24px;
+      }
+
+      .status-indicator {
+        position: static;
+        margin-top: 10px;
+      }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(52, 73, 94, 0.1);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <div class="header-left">
+        <div class="logo">⚡</div>
+        <div class="header-text">
+          <h1>TinyFish HR Automation</h1>
+          <p>Real-world web automation for recruitment</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-badge">
+          <span>Live Demo</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <!-- NAVIGATION -->
+    <nav>
+      <button class="nav-btn active" data-tab="dashboard">📊 Dashboard</button>
+      <button class="nav-btn" data-tab="workflows">⚙️ Workflows</button>
+      <button class="nav-btn" data-tab="logs">📋 Execution Logs</button>
+      <button class="nav-btn" data-tab="about">ℹ️ About</button>
+    </nav>
+
+    <!-- DASHBOARD SECTION -->
+    <section id="dashboard" class="active">
+      <h2>Key Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Jobs Aggregated</div>
+          <div class="metric-value" id="metric-jobs">0</div>
+          <div class="metric-unit">from 4 platforms</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Candidates Screened</div>
+          <div class="metric-value" id="metric-candidates">0</div>
+          <div class="metric-unit">automated scoring</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Interviews Scheduled</div>
+          <div class="metric-value" id="metric-interviews">0</div>
+          <div class="metric-unit">across calendars</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Time Saved (hrs)</div>
+          <div class="metric-value" id="metric-time">0</div>
+          <div class="metric-unit">per week</div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 40px;">Active Workflows</h2>
+      <div id="dashboard-workflows"></div>
+    </section>
+
+    <!-- WORKFLOWS SECTION -->
+    <section id="workflows">
+      <h2>Detailed Workflow Architecture</h2>
+      <div id="workflows-list"></div>
+    </section>
+
+    <!-- LOGS SECTION -->
+    <section id="logs">
+      <h2>Real-Time Execution Logs</h2>
+      <div class="logs-container" id="logs-container"></div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about">
+      <h2>About TinyFish HR Automation</h2>
+      <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(20, 30, 48, 0.8)); border: 1px solid var(--border); border-radius: 12px; padding: 25px; line-height: 1.8;">
+        <h3 style="margin-bottom: 15px; color: var(--primary);">The Problem</h3>
+        <p style="margin-bottom: 20px;">Recruitment teams spend 25-30 hours per week on manual work that could be automated:</p>
+        <ul style="margin-left: 20px; margin-bottom: 20px;">
+          <li>📋 Job posting aggregation (8 hrs/week)</li>
+          <li>📄 Resume screening (12 hrs/week)</li>
+          <li>📅 Interview scheduling (6 hrs/week)</li>
+        </ul>
+
+        <h3 style="margin-bottom: 15px; margin-top: 25px; color: var(--primary);">Our Solution</h3>
+        <p style="margin-bottom: 20px;">Multi-step web automation that handles real complexity:</p>
+        <ul style="margin-left: 20px; margin-bottom: 20px;">
+          <li>🔗 Navigate real websites (LinkedIn, Indeed, Glassdoor)</li>
+          <li>🔐 Handle authentication (OAuth, SSO, form login)</li>
+          <li>📊 Extract structured data (jobs, resumes, candidate info)</li>
+          <li>⚙️ Manage state across 50+ steps</li>
+          <li>📧 Automate calendar & email workflows</li>
+        </ul>
+
+        <h3 style="margin-bottom: 15px; margin-top: 25px; color: var(--primary);">Business Value</h3>
+        <ul style="margin-left: 20px; margin-bottom: 20px;">
+          <li>💰 $40,560 saved per customer per year</li>
+          <li>📉 30-40% reduction in hiring cycle time</li>
+          <li>✅ Better candidate quality through consistent screening</li>
+          <li>🎯 $3M+ ARR potential at scale</li>
+        </ul>
+
+        <h3 style="margin-bottom: 15px; margin-top: 25px; color: var(--primary);">Files Included</h3>
+        <ul style="margin-left: 20px;">
+          <li><strong>hr-automation-platform.jsx</strong> - React dashboard component</li>
+          <li><strong>tinyfish-hr-integration.js</strong> - Full API integration code</li>
+          <li><strong>ARCHITECTURE.md</strong> - 23KB technical documentation</li>
+          <li><strong>QUICK_START.md</strong> - Implementation guide</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>TinyFish Web Agent API • Multi-step automation for HR/Recruitment workflows • Standalone Demo</p>
+  </footer>
+
+  <script>
+    // ====================================================================
+    // APPLICATION STATE
+    // ====================================================================
+
+    class HRAutomationApp {
+      constructor() {
+        this.workflows = new Map();
+        this.logs = [];
+        this.isRunning = false;
+        this.initializeWorkflows();
+        this.setupEventListeners();
+      }
+
+      initializeWorkflows() {
+        this.workflows.set('job-aggregation', {
+          id: 'job-aggregation',
+          name: 'Multi-Platform Job Aggregation',
+          status: 'idle',
+          progress: 0,
+          description: 'Aggregate job postings from LinkedIn, Indeed, Glassdoor, ZipRecruiter',
+          jobsCollected: 0,
+          sources: ['LinkedIn', 'Indeed', 'Glassdoor', 'ZipRecruiter'],
+        });
+
+        this.workflows.set('resume-screening', {
+          id: 'resume-screening',
+          name: 'Intelligent Resume Screening',
+          status: 'idle',
+          progress: 0,
+          description: 'Screen resumes and extract candidate qualifications',
+          candidatesProcessed: 0,
+          matchScore: 0,
+        });
+
+        this.workflows.set('interview-scheduling', {
+          id: 'interview-scheduling',
+          name: 'Interview Scheduling Automation',
+          status: 'idle',
+          progress: 0,
+          description: 'Schedule interviews across calendars and send confirmations',
+          scheduledInterviews: 0,
+        });
+      }
+
+      setupEventListeners() {
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            const tab = e.target.dataset.tab;
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+          });
+        });
+
+        // Workflow buttons - delegated
+        document.addEventListener('click', (e) => {
+          if (e.target.classList.contains('start-btn')) {
+            const workflowId = e.target.dataset.workflowId;
+            this.startWorkflow(workflowId);
+          }
+          if (e.target.classList.contains('pause-btn')) {
+            const workflowId = e.target.dataset.workflowId;
+            this.pauseWorkflow(workflowId);
+          }
+        });
+      }
+
+      addLog(message, type = 'info') {
+        const log = {
+          id: Date.now(),
+          message,
+          type,
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        this.logs.push(log);
+        this.renderLogs();
+      }
+
+      async startWorkflow(workflowId) {
+        const workflow = this.workflows.get(workflowId);
+        if (!workflow || workflow.status === 'running') return;
+
+        workflow.status = 'running';
+        workflow.progress = 0;
+        this.addLog(`🚀 Starting ${workflow.name}`, 'start');
+        this.render();
+
+        if (workflowId === 'job-aggregation') {
+          await this.runJobAggregation(workflow);
+        } else if (workflowId === 'resume-screening') {
+          await this.runResumeScreening(workflow);
+        } else if (workflowId === 'interview-scheduling') {
+          await this.runInterviewScheduling(workflow);
+        }
+
+        workflow.status = 'completed';
+        this.addLog(`✅ ${workflow.name} completed successfully`, 'success');
+        this.render();
+      }
+
+      pauseWorkflow(workflowId) {
+        const workflow = this.workflows.get(workflowId);
+        if (workflow && workflow.status === 'running') {
+          workflow.status = 'paused';
+          this.addLog('⏸️  Workflow paused', 'warning');
+          this.render();
+        }
+      }
+
+      async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async runJobAggregation(workflow) {
+        const platforms = [
+          { name: 'LinkedIn', jobs: 145 },
+          { name: 'Indeed', jobs: 98 },
+          { name: 'Glassdoor', jobs: 76 },
+          { name: 'ZipRecruiter', jobs: 23 },
+        ];
+
+        for (const platform of platforms) {
+          this.addLog(`🔗 Connecting to ${platform.name}...`, 'info');
+          await this.sleep(300);
+
+          this.addLog(`🔐 Handling authentication...`, 'info');
+          await this.sleep(200);
+
+          this.addLog(`🔍 Searching for Software Engineer jobs...`, 'info');
+          await this.sleep(300);
+
+          let jobCount = 0;
+          const pagesForPlatform = Math.ceil(platform.jobs / 25);
+
+          for (let page = 1; page <= pagesForPlatform; page++) {
+            const jobsOnPage = Math.min(25, platform.jobs - (page - 1) * 25);
+            this.addLog(`  📄 ${platform.name} page ${page}/${pagesForPlatform}: extracted ${jobsOnPage} jobs`, 'info');
+
+            jobCount += jobsOnPage;
+            workflow.jobsCollected += jobsOnPage;
+            workflow.progress = Math.min(90, (workflow.jobsCollected / 350) * 90);
+            this.render();
+
+            await this.sleep(200);
+          }
+
+          this.addLog(`✅ ${platform.name}: Collected ${platform.jobs} jobs`, 'success');
+          await this.sleep(150);
+        }
+
+        this.addLog('🔄 Deduplicating jobs across platforms...', 'info');
+        await this.sleep(400);
+
+        workflow.jobsCollected = 342;
+        workflow.progress = 100;
+        this.render();
+      }
+
+      async runResumeScreening(workflow) {
+        const candidates = [
+          { name: 'Carol White', score: 95 },
+          { name: 'Alice Johnson', score: 92 },
+          { name: 'Grace Kim', score: 91 },
+          { name: 'Eve Martinez', score: 90 },
+          { name: 'Henry Brown', score: 87 },
+          { name: 'Bob Smith', score: 88 },
+          { name: 'David Lee', score: 85 },
+          { name: 'Frank Chen', score: 72 },
+        ];
+
+        this.addLog('🔐 Connecting to ATS (Greenhouse)...', 'info');
+        await this.sleep(300);
+
+        this.addLog('🔑 Handling OAuth authentication...', 'info');
+        await this.sleep(200);
+
+        this.addLog('📂 Navigating to applications...', 'info');
+        await this.sleep(200);
+
+        for (const candidate of candidates) {
+          this.addLog(`👤 Screening ${candidate.name}...`, 'info');
+          await this.sleep(100);
+          this.addLog(`  📄 Downloaded resume for ${candidate.name}`, 'info');
+          await this.sleep(100);
+          this.addLog(`  📊 Scoring: ${candidate.score}/100`, 'info');
+
+          workflow.candidatesProcessed++;
+          workflow.matchScore = Math.round(
+            candidates.slice(0, workflow.candidatesProcessed)
+              .reduce((sum, c) => sum + c.score, 0) / workflow.candidatesProcessed
+          );
+          workflow.progress = (workflow.candidatesProcessed / candidates.length) * 100;
+          this.render();
+
+          await this.sleep(100);
+        }
+
+        workflow.progress = 100;
+        this.render();
+      }
+
+      async runInterviewScheduling(workflow) {
+        const interviews = [
+          { candidateName: 'Carol White', date: '2026-03-15', time: '10:00 AM' },
+          { candidateName: 'Alice Johnson', date: '2026-03-16', time: '2:00 PM' },
+          { candidateName: 'Grace Kim', date: '2026-03-17', time: '11:00 AM' },
+          { candidateName: 'Bob Smith', date: '2026-03-18', time: '3:00 PM' },
+          { candidateName: 'Eve Martinez', date: '2026-03-19', time: '9:00 AM' },
+        ];
+
+        this.addLog('📅 Accessing calendar system...', 'info');
+        await this.sleep(300);
+
+        this.addLog('🔐 Authenticating with Google Calendar...', 'info');
+        await this.sleep(200);
+
+        for (const interview of interviews) {
+          this.addLog(`📞 Scheduling interview for ${interview.candidateName}...`, 'info');
+          await this.sleep(100);
+          this.addLog(`  🔍 Checking availability...`, 'info');
+          await this.sleep(150);
+          this.addLog(`  ✅ Found slot: ${interview.date} at ${interview.time}`, 'success');
+          await this.sleep(100);
+          this.addLog(`  📅 Creating calendar event...`, 'info');
+          await this.sleep(100);
+          this.addLog(`  📧 Sending interview invitation...`, 'info');
+          await this.sleep(150);
+
+          workflow.scheduledInterviews++;
+          workflow.progress = (workflow.scheduledInterviews / interviews.length) * 100;
+          this.render();
+
+          await this.sleep(100);
+        }
+
+        workflow.progress = 100;
+        this.render();
+      }
+
+      updateMetrics() {
+        const jobsWorkflow = this.workflows.get('job-aggregation');
+        const candidatesWorkflow = this.workflows.get('resume-screening');
+        const interviewsWorkflow = this.workflows.get('interview-scheduling');
+
+        document.getElementById('metric-jobs').textContent = jobsWorkflow?.jobsCollected || 0;
+        document.getElementById('metric-candidates').textContent = candidatesWorkflow?.candidatesProcessed || 0;
+        document.getElementById('metric-interviews').textContent = interviewsWorkflow?.scheduledInterviews || 0;
+
+        const timeSaved = 
+          (jobsWorkflow?.jobsCollected || 0) * 0.15 +
+          (candidatesWorkflow?.candidatesProcessed || 0) * 0.08 +
+          (interviewsWorkflow?.scheduledInterviews || 0) * 0.12;
+        
+        document.getElementById('metric-time').textContent = Math.round(timeSaved);
+      }
+
+      renderWorkflowCard(workflow) {
+        const stats = [];
+        
+        if (workflow.id === 'job-aggregation') {
+          stats.push(`<div class="stat-box"><div class="stat-label">Jobs</div><div class="stat-value">${workflow.jobsCollected}</div></div>`);
+          stats.push(`<div class="stat-box"><div class="stat-label">Sources</div><div class="stat-value">${workflow.sources.length}</div></div>`);
+        } else if (workflow.id === 'resume-screening') {
+          stats.push(`<div class="stat-box"><div class="stat-label">Processed</div><div class="stat-value">${workflow.candidatesProcessed}</div></div>`);
+          stats.push(`<div class="stat-box"><div class="stat-label">Avg Score</div><div class="stat-value">${workflow.matchScore}</div></div>`);
+        } else if (workflow.id === 'interview-scheduling') {
+          stats.push(`<div class="stat-box"><div class="stat-label">Scheduled</div><div class="stat-value">${workflow.scheduledInterviews}</div></div>`);
+        }
+
+        const statusClass = `status-${workflow.status}`;
+        const isRunning = workflow.status === 'running';
+        const showStart = workflow.status === 'idle' || workflow.status === 'paused';
+
+        return `
+          <div class="workflow-card">
+            <div class="workflow-header">
+              <div class="workflow-info">
+                <h3>${workflow.name}</h3>
+                <p>${workflow.description}</p>
+              </div>
+              <div class="workflow-controls">
+                <button class="btn btn-primary start-btn" data-workflow-id="${workflow.id}" ${!showStart ? 'style="display:none"' : ''}>▶ Start</button>
+                <button class="btn btn-secondary pause-btn" data-workflow-id="${workflow.id}" ${isRunning ? '' : 'style="display:none"'}>⏸ Pause</button>
+              </div>
+              <div class="status-indicator ${statusClass}">${workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}</div>
+            </div>
+            <div class="progress-section">
+              <div class="progress-label">
+                <span>Progress</span>
+                <span>${Math.round(workflow.progress)}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${workflow.progress}%"></div>
+              </div>
+            </div>
+            <div class="workflow-stats">${stats.join('')}</div>
+          </div>
+        `;
+      }
+
+      renderDashboard() {
+        const container = document.getElementById('dashboard-workflows');
+        let html = '';
+        this.workflows.forEach(workflow => {
+          html += this.renderWorkflowCard(workflow);
+        });
+        container.innerHTML = html;
+      }
+
+      renderWorkflows() {
+        const container = document.getElementById('workflows-list');
+        let html = '';
+        this.workflows.forEach(workflow => {
+          html += this.renderWorkflowCard(workflow);
+        });
+        container.innerHTML = html;
+      }
+
+      renderLogs() {
+        const container = document.getElementById('logs-container');
+        const maxLogs = 100;
+        const logsToShow = this.logs.slice(-maxLogs);
+
+        let html = '';
+        logsToShow.forEach(log => {
+          html += `
+            <div class="log-entry">
+              <div class="log-time">[${log.timestamp}]</div>
+              <div class="log-message log-${log.type}">${log.message}</div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+      }
+
+      render() {
+        this.updateMetrics();
+        this.renderDashboard();
+        this.renderWorkflows();
+      }
+    }
+
+    // ====================================================================
+    // INITIALIZE APP
+    // ====================================================================
+
+    let app;
+    document.addEventListener('DOMContentLoaded', () => {
+      app = new HRAutomationApp();
+      app.render();
+    });
+  </script>
+</body>
+</html>
